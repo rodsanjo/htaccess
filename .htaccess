@@ -1,0 +1,145 @@
+# Apache configuration file (see httpd.apache.org/docs/2.2/mod/quickreference.html)
+
+# ¡¡COMENTARIOS!!
+# NO HAY QUE ESCRIBIR COMENTARIOS EN LA MISMA LÍNEA QUE LAS SENTENCIAS
+# Se escriben en una línea anterior.
+
+# disable directory listing
+Options -Indexes
+
+# Activamos la reescritura
+RewriteEngine on
+
+# Acivamos la herencia de servidores jeráquicos superiores.
+RewriteOptions Inherit
+
+#RewriteBase /mod_rewrite/
+
+# Funciona
+# Visualizar variables internas que pueden usarse en .htaccess
+# RewriteRule (.*) index.php?rule_url=$1&REQUEST_URI=%{REQUEST_URI}&TIME_YEAR=%{TIME_YEAR}&server_protocol=%{SERVER_PROTOCOL}&server_name=%{SERVER_NAME}&THE_REQUEST&=%{THE_REQUEST}&HTTPS&=%{HTTPS}&SERVER_PORT=%{SERVER_PORT}&URL=http://%{SERVER_NAME}/mod_rewrite_www/index.php  [L]
+
+
+# Funciona
+# Simulación de Alias (Si nos escriben "app1" lo transformamos a "aplicacion1")
+#RewriteCond %{REQUEST_URI} ^(/\w{1,}/)app1(/\w{0,}){0,1}$ [NC]
+#RewriteRule .* %1aplication1/?R_U=%{REQUEST_URI}&H_R=%{HTTP_REFERER} [QSA,L,NS,S=20]
+
+# Funciona
+#RewriteCond %{REQUEST_URI} ^(/.+/)admin(/.*)?$ [NC]
+#RewriteRule .* %1aplication2/?request_uri=%{REQUEST_URI}&http_referer=%{HTTP_REFERER}&query_string=%{QUERY_STRING}&the_request=%{THE_REQUEST}&request_filename=%{REQUEST_FILENAME}&is_subreq=%{IS_SUBREQ} [L,QSA]
+
+# Redidección
+RewriteCond %{REQUEST_URI} (.*)/fp(/.*)?
+RewriteRule .+ http://www.madrid.org/fp/ [R,L]
+
+RewriteCond %{REQUEST_URI} (.*)/php(/.*)?
+RewriteRule .+ http://www.php.net/manual/es/index.php [R,L]
+
+
+
+
+# Funciona
+# Simulación de Alias
+#RewriteCond %{REQUEST_URI} ^(/.+/)admin(/.*)?$ [NC]
+#RewriteRule .* %1aplication2/ [QSA,L,S=10]
+
+# Funciona
+# URL amigable tipo .../app_root/parametro1/parametro2/parametro3/parametro4/
+# Atención que \w = [a-z09_] Otros caracteres no serán detectados como válidos.
+#RewriteCond %{REQUEST_URI} !(^(/.+/)admin(/.*)?$)
+#RewriteRule (\w+)/(\w+)/(\w+)/(\w+)/?$ index.php?menu=$1&submenu=$2&id=$3&r4=$4 [QSA,L,NS]
+#RewriteRule (\w+)/(\w+)/(\w+)/?$ index.php?menu=$1&submenu=$2&id=$3 [QSA,L,NS]
+#RewriteRule (\w+)/(\w+)/?$ index.php?menu=$1&submenu=$2 [QSA,L,NS]
+#RewriteRule (\w+)/?$ index.php?menu=$1 [QSA,L,NS]
+#RewriteRule !(.*/) index.php [QSA,L,NS]
+
+# Funciona
+# URL amigable
+# Recibe http://www.aplicacion.com/dato1/dato2/dato3/ 
+# Recibe http://www.servidor.com/aplicacion/dato1/dato2/dato3/ 
+# y reescribe
+# http://www.aplicacion.com/index.php?a1=dato1&a2=dato2&a3=dato3 
+# http://www.servidor.com/aplicacion/index.php?a1=dato1&a2=dato2&a3=dato3 
+# Si la URL acaba en .extension no hace la reescritura, por ejemplo (.php, .css, .js, .png, ...)
+RewriteCond %{REQUEST_URI} !(\.\w+$)
+RewriteRule (.+)/(.+)/(.+)/(.+)/$ index.php?a1=$1&a2=$2&a3=$3&a4=$4&request_uri=%{REQUEST_URI} [QSA,L,NS]
+
+RewriteCond %{REQUEST_URI} !(\.\w+$)
+RewriteRule (.+)/(.+)/(.+)/$ index.php?a1=$1&a2=$2&a3=$3&request_uri=%{REQUEST_URI} [QSA,L,NS]
+
+RewriteCond %{REQUEST_URI} !(\.\w+$)
+RewriteRule (.+)/(.+)/$ index.php?a1=$1&a2=$2&request_uri=%{REQUEST_URI} [QSA,L,NS]
+
+RewriteCond %{REQUEST_URI} !(\.\w+$)
+RewriteRule (.+)/$ index.php?a1=$1&rule_url=$1&request_uri=%{REQUEST_URI} [QSA,L,NS]
+
+RewriteCond %{REQUEST_URI} !(\.\w+$)
+RewriteRule (.*) index.php?rule_url=$1&request_uri=%{REQUEST_URI} [QSA,L,NS]
+
+
+# Funciona
+# Url amigable tipo www.aplicacion.com/dato1/dato2/dato3/
+# o
+# Url amigable tipo www.server.com/aplicacion/dato1/dato2/dato3/
+# Si la URL acaba en .extension no hace la reescritura, por ejemplo (.php, .css, .js, .png, ...). La primera de las dos RewriteCond podría elimiarse.
+#RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|gif)$
+#RewriteCond %{REQUEST_URI} !(\.\w+)$
+#RewriteRule .* index.php [QSA,L,NS]
+
+# Funciona
+# Simulación de Redirección y de
+# URL amigable tipo .../app_root/parametro1/parametro2/parametro3/parametro4/
+#RewriteRule (\w+)/(\w+)/(\w+)/(\w+)/?$ aplication2/?r1=$1&r2=$2&r3=$3&r4=$4 [QSA,L,NS]
+#RewriteRule (\w+)/(\w+)/(\w+)/?$ aplication2/?r1=$1&r2=$2&r3=$3 [QSA,L,NS]
+#RewriteRule (\w+)/(\w+)/?$ aplication2/?r1=$1&r2=$2&r3=$3 [QSA,L,NS]
+#RewriteRule (\w+)(/)$ aplication2/?r1=$1&r2=$2&r3=$3 [QSA,L,NS]
+#RewriteRule !(.+/) aplication2/?r1=$1&r2=$2&r3=$3 [QSA,L,NS]
+
+
+#RewriteCond %{REQUEST_URI} admin/?$
+#RewriteRule ^(.*)$ aplication2/ [L]
+
+
+#RewriteCond %{REQUEST_URI} ^(/.+/)$ [NC]
+#RewriteRule .* /aplication1/?R_U=%{REQUEST_URI}&H_R=%{HTTP_REFERER}&admin=admin&%{QUERY_STRING} [L]
+#RewriteRule ^(.*)$ aplication2/?p1=%{REQUEST_URI}&p2=%{HTTP_REFERER} [L]
+
+
+
+
+#RewriteCond %{REQUEST_URI} ^(/.+)/?$ #[OR]
+#RewriteCond %{REQUEST_URI} ^(/.+)/$ [OR]
+#RewriteCond %{REQUEST_URI} ^(/.+)(/\?.?)$
+#RewriteRule .* %1aplication1/?%{QUERY_STRING} [L]
+
+
+
+
+#RewriteCond %{THE_REQUEST} app1
+#RewriteRule app1/? aplication1/?P1=%{HTTP_REFERER} [L]
+
+# Funciona
+#RewriteCond %{REQUEST_URI} ^(/.*/)app2
+#RewriteRule ^.*$ aplication2/?p1=%{REQUEST_URI}&p2=%{HTTP_REFERER} [L,S=10]
+
+
+
+#RewriteRule ^(.*)$ - [F]
+
+# Prohibido acceder a esta carpeta
+RewriteRule .* - [F]
+
+#Accesso prohibido  
+RewriteRule .* - [F]
+ 
+RewriteRule .* -f [L]
+
+# Redirecciones
+RewriteCond %{SERVER_PORT} =443
+RewriteRule .* https://%{SERVER_NAME}/mod_rewrite_www/ [QSA,R,L]
+#RewriteRule .* https://%{SERVER_NAME}/mod_rewrite_www/?HTTP_REFERER=%{HTTP_REFERER}&HTTP_FORWARDED=%{HTTP_FORWARDED} [QSA,R,L]
+
+RewriteCond %{SERVER_PORT} =80
+RewriteRule .* https://%{SERVER_NAME}/mod_rewrite_www/ [QSA,R,L]
+# RewriteRule .* http://%{SERVER_NAME}/mod_rewrite_www/?HTTP_REFERER=%{HTTP_REFERER}&HTTP_FORWARDED=%{HTTP_FORWARDED} [QSA,R,L]
